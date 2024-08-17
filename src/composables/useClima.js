@@ -3,9 +3,16 @@ import axios from "axios"
 
 export default function useClima() {
 
-    const clima = ref({})
+    const clima = ref({}) // state
+    const cargando = ref(false) // state
+    const errorComposable = ref("") // state
 
     const obtenerClima = async({ciudad, pais}) => {
+
+        clima.value = {}
+        cargando.value = true
+        errorComposable.value = ""
+
         // importo la Api Key (guardada en .env.local) de la API del clima vvv
         const key = import.meta.env.VITE_API_KEY 
 
@@ -24,18 +31,28 @@ export default function useClima() {
             const {data: resultado} = await axios(urlClima)
             clima.value = resultado
 
-        } catch (error) {
-            console.log(error);
+        } catch {
+            errorComposable.value = "Ciudad no encontrada"
+        } finally { 
+            // el finally se ejecuta siempre, independientemente de que se ejecute el try o el catch
+            cargando.value = false
         }
     }
 
-    const mostrarClima = computed( () => {
+    const mostrarClima = computed( () => { // computed property
         return Object.keys(clima.value).length > 0
     })
+
+    const convertirKelvinEnCelsius = tKelvin => parseInt(tKelvin - 273.15)
+    // parseInt elimina la parte decimal de un numero vvv 
+    // console.log(parseInt(2.999)) // 2
 
     return {
         obtenerClima,
         clima,
         mostrarClima,
+        convertirKelvinEnCelsius,
+        cargando,
+        errorComposable,
     }
 }

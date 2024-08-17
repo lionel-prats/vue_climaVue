@@ -1,6 +1,9 @@
 <script setup>
     import {reactive, ref} from "vue"
     import Alerta from "./Alerta.vue"
+    
+    // import useClima from "../composables/useClima"
+    // const {errorComposable} = useClima()
 
     const emit = defineEmits(["obtener-clima"])
 
@@ -37,6 +40,7 @@
         @submit.prevent="consultarClima" 
     >
         <Alerta v-if="error">{{error}}</Alerta>
+        <!-- <Alerta v-if="errorComposable">{{errorComposable}}</Alerta> -->
         <div class="campo">
             <label for="ciudad">Ciudad</label>
             <input 
